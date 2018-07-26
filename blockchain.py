@@ -1,6 +1,6 @@
 import hashlib
 import json
-from textwrap inport dedent
+from textwrap import dedent
 from time import time
 from uuid import uuid4
 from flask import Flask, jsonify, request
@@ -71,7 +71,7 @@ class Blockchain(object):
         block_string = json.dumps(block, sort_keys=True).encode()
         return hashlib.sha256(block_string).hexdigest()
 
-    def proof_of_work(selfself, last_proof):
+    def proof_of_work(self, last_proof):
         """
         Simple Proof of Work Algorithm:
             - Find a number p' such that hash(pp') contains leading 4 zeros,
@@ -119,7 +119,7 @@ def mine():
     # We must receive a reward for finding the proof.
     # The sender is "0" to signify that this node has mined a new coin
     blockchain.new_transaction(
-        senders="0",
+        sender="0",
         recipient=node_identifier,
         amount=1,
     )
@@ -137,14 +137,14 @@ def mine():
     }
     return jsonify(response), 200
 
-@app.route('/transaction/new', methods=['POST'])
+@app.route('/transactions/new', methods=['POST'])
 def new_transaction():
     values = request.get_json()
 
     # Check that the required fields are in the POST'ed data
     required = ['sender', 'recipient', 'amount']
     if not all(k in values for k in required):
-        return  'Missing values', 400
+        return 'Missing values', 400
 
     # Create a new transaction
     index = blockchain.new_transaction(values['sender'], values['recipient'], values['amount'])
@@ -155,10 +155,10 @@ def new_transaction():
 @app.route('/chain', methods=['GET'])
 def full_chain():
     response = {
-        'chain': :blockchain.chain,
+        'chain': blockchain.chain,
         'length': len(blockchain.chain),
     }
     return jsonify(response), 200
 
-if __name__ = '__main__':
+if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
